@@ -1,0 +1,29 @@
+{
+  "name": "switchboard-submission",
+  "version": "1.0.0",
+  "private": true,
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "up": "docker compose up -d && node harness/doctor.js --wait",
+    "up:search": "docker compose --profile search up -d && node harness/doctor.js --wait",
+    "down": "docker compose --profile search down",
+    "doctor": "node harness/doctor.js",
+    "mocks": "node harness/run-mocks.js",
+    "check": "node harness/check.js",
+    "check:full": "node harness/check.js --full",
+    "chaos": "node harness/pigeon.js chaos",
+    "report": "node harness/pigeon.js report",
+    "inbound": "node harness/pigeon.js inbound",
+    "quiet": "node harness/pigeon.js quiet",
+    "drizzle": "node harness/pigeon.js drizzle",
+    "install:app": "npm --prefix server ci && npm --prefix client ci",
+    "start": "npm --prefix server start",
+    "start:server": "npm --prefix server start",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "build": "npm --prefix client run build",
+    "scaffold:install": "npm run install:app",
+    "scaffold:server": "npm run dev:server",
+    "scaffold:web": "npm run dev:client"
+  }
+}

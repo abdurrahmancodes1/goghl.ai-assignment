@@ -1,0 +1,5 @@
+import { Counter,WorkspaceEvent } from '../models.js';
+import { publisher,subscriber } from '../redis.js';
+export const listeners=new Map();
+export async function publishEvent(workspace,type,payload,sourceId){if(sourceId){const old=await WorkspaceEvent.findOne({workspace,sourceId}).lean();if(old){await publisher.publish('switchboard-events',JSON.stringify(old));return old;}}const c=await Counter.findByIdAndUpdate(workspace,{$inc:{nextSeq:1}},{upsert:true,new:true});const e={workspace,seq:c.nextSeq,type,sourceId,payload,createdAt:new Date()};try{await WorkspaceEvent.create(e);}catch(error){if(error.code!==11000)throw error;const old=await WorkspaceEvent.findOne({workspace,sourceId}).lean();if(!old)throw error;await publisher.publish('switchboard-events',JSON.stringify(old));return old;}await publisher.publish('switchboard-events',JSON.stringify(e));return e;}
+export async function startEvents(){await subscriber.subscribe('switchboard-events');subscriber.on('message',(_,raw)=>{const e=JSON.parse(raw);for(const notify of listeners.get(e.workspace)||[])notify(e);});}

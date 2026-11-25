@@ -1,0 +1,10 @@
+import { mongoose } from './db.js';
+const {Schema}=mongoose;
+export const Conversation=mongoose.model('Conversation',new Schema({workspace:{type:String,required:true},contact:{type:String,required:true},assignee:{type:String,default:null},state:{type:String,default:'open'},lastActivityAt:Date},{timestamps:true}));
+Conversation.schema.index({workspace:1,contact:1},{unique:true});Conversation.schema.index({workspace:1,lastActivityAt:-1});
+export const Message=mongoose.model('Message',new Schema({workspace:String,contact:String,direction:String,providerMessageId:String,clientRef:String,text:String,occurredAt:Date,status:String,delivery:{state:String,attempts:Number,nextAttemptAt:Date,leaseUntil:Date,leaseOwner:String}},{timestamps:true}));
+Message.schema.index({workspace:1,providerMessageId:1},{unique:true,partialFilterExpression:{providerMessageId:{$type:'string'}}});Message.schema.index({workspace:1,clientRef:1},{unique:true,partialFilterExpression:{clientRef:{$type:'string'}}});Message.schema.index({'delivery.state':1,'delivery.nextAttemptAt':1,'delivery.leaseUntil':1});
+export const WebhookEvent=mongoose.model('WebhookEvent',new Schema({provider:String,eventId:String,payload:Schema.Types.Mixed,state:String,receivedAt:Date,processedAt:Date,processingOwner:String,processingUntil:Date}));WebhookEvent.schema.index({provider:1,eventId:1},{unique:true});
+export const WorkspaceEvent=mongoose.model('WorkspaceEvent',new Schema({workspace:String,seq:Number,type:String,sourceId:String,payload:Schema.Types.Mixed,createdAt:Date}));WorkspaceEvent.schema.index({workspace:1,seq:1},{unique:true});WorkspaceEvent.schema.index({workspace:1,sourceId:1},{unique:true,partialFilterExpression:{sourceId:{$type:'string'}}});
+export const Counter=mongoose.model('Counter',new Schema({_id:String,nextSeq:{type:Number,default:0}},{collection:'workspace_counters'}));
+export const Session=mongoose.model('Session',new Schema({_id:String,sub:String,name:String,email:String,workspaces:Array,pkce:Schema.Types.Mixed,expiresAt:Date}));Session.schema.index({expiresAt:1},{expireAfterSeconds:0});
