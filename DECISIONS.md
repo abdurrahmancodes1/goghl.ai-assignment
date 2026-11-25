@@ -15,7 +15,22 @@
 
 - Installed both applications from lockfiles and built the React client successfully in the supplied Node 22 Alpine runtime. Compose configuration and all application/harness entry-point paths validated. SHA-256 checks confirmed all 17 copied infrastructure/documentation files match their parent originals.
 - `npm run up` started the five supplied services; both its readiness check and `npm run doctor` printed all required services PASS and Ready. Host Windows Node 24.19.0 then exited with a native `UV_HANDLE_CLOSING` assertion. This host runtime problem remains unresolved. Docker itself is available.
-- Ran the unchanged `npm run check` and `npm run check:full` inside a one-off Linux container using the existing Compose network/services, with port 4000 forwarded and service URLs supplied through the environment. Quick check: 24/24. Full check: 71.3/75 (L1 24/24, L2 11.8/14, L3 20.5/22, L5 15/15). The genuine full report is `CHECK_REPORT.json`; hidden Level 4 was not run.
-- Known failures: crash inbound completeness was 103/169 messages; multi-instance sending made two requests during Retry-After. Startup was observed waiting on the Windows bind-mount filesystem, but the precise cause of message loss has not been isolated. These are outstanding correctness/verification risks, not passing requirements.
+- Ran the unchanged `npm run check` and `npm run check:full` inside a one-off Linux container using the existing Compose network/services, with port 4000 forwarded and service URLs supplied through the environment. Quick check: 24/24. Latest full check: 72.8/75 (L1 24/24, L2 11.8/14, L3 22/22, L5 15/15). The genuine full report is `CHECK_REPORT.json`; hidden Level 4 was not run.
+- Known failures: crash inbound completeness was 109/172 messages, and crash-send status matched 11/12 final statuses. The latest multi-instance Retry-After check passed. Startup was observed waiting on the Windows bind-mount filesystem, but the precise cause of inbound loss and the one missing status has not been isolated. These are outstanding correctness/verification risks, not passing requirements.
 - The visible login, tenant isolation, live WebSocket and reconnect replay checks passed. This does not establish correctness for every untested race. The browser client remains minimal and was built, not manually exercised end to end.
 - The checker stops Pigeon's drizzle. Use `npm run drizzle` when resuming interactive development. No volumes were removed; the only application-data resets were the documented checker workflows. Export actual AI session transcripts into `ai-logs/` before submission; they have not been fabricated or substituted with summaries.
+
+## Targeted product & correctness updates
+
+- Added backward-compatible conversation pagination to `GET /api/conversations`: omitting `page` and `limit` returns the existing array shape; passing `page` or `limit` returns `{ items, page, limit, total, hasMore }`. Added Prev/Next controls in the React sidebar.
+- Added `POST /api/conversations/:contact/state` (accepting `open` or `closed`) with session and workspace membership checks, publishing `conversation.state` events, plus a Close/Reopen button in the React conversation header.
+- Updated `client/src/main.jsx` to initialize `workspace` from `me.workspaces[0].id` (instead of hard-coding `ws_acme`), refresh the active conversation's messages and metadata on WebSocket events, and reconnect with exponential backoff using `&after=<lastSeq>`.
+- Extended `Session.expiresAt` to 24 hours (and `Max-Age=86400` on `sb_session`) on successful `/auth/callback` in `server/src/routes/auth.js`.
+- Added `isValidWebhookPayload()` in `server/src/index.js` to return `400` on non-object JSON, missing `id`, or malformed `message.inbound`/`message.status` payloads for known workspaces before calling `ingest()`.
+- Outbound worker logic, webhook recovery, database indexes, and backend WebSocket sequencing were left unchanged.
+
+## Post-update verification
+
+- `npm run build` (Vite production build) succeeded (`dist/assets/index-P3y5pgR2.js`, 913ms).
+- `npm run check:full` in the Linux Node 22 container scored **72.8 / 75** (`L1 24/24`, `L2 11.8/14`, `L3 22/22`, `L5 15/15`), written to `CHECK_REPORT.json`.
+- Remaining limitations: `crash_inbound_complete` stored `109/172` messages (`0.9/3`), `crash_sends_status` matched `11/12` (`0.92/1`), hidden Level 4 was not run, the React UI was built but not manually exercised end to end in a browser, and `ai-logs/` must still be exported before submission.

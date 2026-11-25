@@ -93,7 +93,7 @@ the application does not implement these optional features.
 ## Current verification
 
 On 2026-11-25 the Linux Node 22 installation and client production build passed.
-The quick checker scored 24/24; the full checker scored 71.3/75. See the actual
+The quick checker scored 24/24; the latest full checker scored 72.8/75. See the actual
 `CHECK_REPORT.json` and the remaining crash/retry failures in `DECISIONS.md`.
 Hidden Level 4 and manual browser testing were not performed.
 

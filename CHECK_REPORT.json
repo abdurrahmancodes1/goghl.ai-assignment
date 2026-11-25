@@ -1,13 +1,13 @@
 {
   "profile": "full",
-  "startedAt": "2026-11-25T13:32:02.867Z",
+  "startedAt": "2026-11-25T14:03:57.662Z",
   "checks": [
     {
       "level": 1,
       "id": "inbound_complete",
       "max": 4,
       "got": 4,
-      "detail": "174 of 174 genuine messages stored"
+      "detail": "172 of 172 genuine messages stored"
     },
     {
       "level": 1,
@@ -49,7 +49,7 @@
       "id": "ack_speed",
       "max": 1,
       "got": 1,
-      "detail": "p95 acknowledgement 87 ms, 0 first attempts not acknowledged"
+      "detail": "p95 acknowledgement 187 ms, 0 first attempts not acknowledged"
     },
     {
       "level": 1,
@@ -90,8 +90,8 @@
       "level": 2,
       "id": "crash_inbound_complete",
       "max": 3,
-      "got": 0.83,
-      "detail": "killed at 12 s, down 4 s: 103 of 169 genuine messages stored"
+      "got": 0.9,
+      "detail": "killed at 12 s, down 4 s: 109 of 172 genuine messages stored"
     },
     {
       "level": 2,
@@ -125,15 +125,15 @@
       "level": 2,
       "id": "crash_sends_status",
       "max": 1,
-      "got": 1,
-      "detail": "12 of 12 final statuses match the carrier"
+      "got": 0.92,
+      "detail": "11 of 12 final statuses match the carrier"
     },
     {
       "level": 3,
       "id": "multi_inbound_complete",
       "max": 2,
       "got": 2,
-      "detail": "178 of 178 genuine messages stored"
+      "detail": "175 of 175 genuine messages stored"
     },
     {
       "level": 3,
@@ -167,8 +167,8 @@
       "level": 3,
       "id": "multi_retry_after",
       "max": 3,
-      "got": 1.5,
-      "detail": "2 requests sent inside a Retry-After window (the limit is per workspace, not per instance)"
+      "got": 3,
+      "detail": "0 requests sent inside a Retry-After window (the limit is per workspace, not per instance)"
     },
     {
       "level": 3,
@@ -227,7 +227,7 @@
       "detail": "4 of 4 messages that arrived while disconnected were replayed after reconnecting with after=6; 0 frames at or before that seq were sent again"
     }
   ],
-  "score": 71.3,
+  "score": 72.8,
   "max": 75,
   "levels": {
     "1": {
@@ -239,7 +239,7 @@
       "max": 14
     },
     "3": {
-      "got": 20.5,
+      "got": 22,
       "max": 22
     },
     "5": {
@@ -247,5 +247,5 @@
       "max": 15
     }
   },
-  "finishedAt": "2026-11-25T13:37:19.061Z"
+  "finishedAt": "2026-11-25T14:10:50.252Z"
 }
